@@ -1,22 +1,26 @@
 import { useHistory } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { FormEvent, useState } from 'react';
 
-import { database } from '../services/firebase';
+import { database } from '../../services/firebase';
 
 import { CgLogIn } from 'react-icons/cg';
-import { Button } from '../components/Button';
+import { Button } from '../../components/Button';
+import { Loading } from '../../components/Loading';
+import { SignOutButton } from '../../components/SignOutButton';
 
-import illustrationImg from '../assets/images/illustration.svg';
-import logoImg from '../assets/images/logo.svg';
-import googleIconImg from '../assets/images/google-icon.svg';
+import illustrationImg from '../../assets/images/illustration.svg';
+import logoImg from '../../assets/images/logo.svg';
+import googleIconImg from '../../assets/images/google-icon.svg';
 
-import '../styles/auth.scss';
+import '../../styles/auth.scss';
 
 export function Home() {
   const history = useHistory();
-  const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle, signOut } = useAuth();
   const [roomCode, setRoomCode] = useState('');
+
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleCreateRoom() {
     if (!user) {
@@ -27,6 +31,8 @@ export function Home() {
   }
 
   async function handleJoinRoom(e: FormEvent) {
+    setIsLoading(true);
+
     e.preventDefault();
 
     if (roomCode.trim() === '') return;
@@ -35,14 +41,28 @@ export function Home() {
 
     if (!roomRef.exists()) {
       alert('Room does not exists.');
-      return;
+      return setIsLoading(false);
     }
+
+    if (roomRef.val().endedAt) {
+      alert('Room already closed.');
+      return setIsLoading(false);
+    }
+
+    setIsLoading(false);
 
     return history.push(`/rooms/${roomCode}`);
   }
 
+  async function handleSignOut() {
+    await signOut();
+    document.location.reload();
+  }
+
   return (
     <div id="page-auth">
+      <Loading isLoading={isLoading} />
+      <SignOutButton onClick={handleSignOut} />
       <aside>
         <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
