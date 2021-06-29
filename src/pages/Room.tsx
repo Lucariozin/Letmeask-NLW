@@ -137,6 +137,7 @@ export function Room() {
                       key={question.id}
                       content={question.content}
                       author={question.author}
+                      isAnswered={question.isAnswered}
                     >
                       <div onClick={() => handleLikeQuestion(question.id, question.likeId)} className={question.likeId ? "like liked" : "like"}>
                         {question.likeCount > 0 && <span>{question.likeCount}</span>}

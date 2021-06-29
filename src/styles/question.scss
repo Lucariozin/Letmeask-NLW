@@ -1,7 +1,7 @@
 .question {
   height: 130px;
   padding: 15px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 10px;
   background: #fefefe;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
@@ -10,6 +10,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  transition: filter .2s;
 
   p {
     display: block;
@@ -77,4 +79,26 @@
       }
     }
   }
+}
+
+.answered {
+  filter: brightness(0.8);
+
+  > div {
+    .liked {
+      display: none;
+    }
+  }
+
+  .adm-icons {
+    .check-icon,
+    .highlighted-icon {
+      display: none;
+    }
+  }
+}
+
+.highlighted {
+  filter: brightness(0.95);
+  border: 1px solid #835afd;
 }

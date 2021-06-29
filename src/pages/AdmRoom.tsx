@@ -81,6 +81,18 @@ export function AdmRoom() {
     }
   }
 
+  async function handleCheckQuestionAsAnswered(questionId: string) {
+    await database.ref(`rooms/${id}/questions/${questionId}`).update({
+      isAnswered: true,
+    });
+  }
+
+  async function handleHighlightQuestion(questionId: string) {
+    await database.ref(`rooms/${id}/questions/${questionId}`).update({
+      isHighlighted: true,
+    });
+  }
+
   return (
     <div id="room-container">
       <Loading isLoading={isLoading} />
@@ -111,10 +123,12 @@ export function AdmRoom() {
                       key={question.id}
                       content={question.content}
                       author={question.author}
+                      isAnswered={question.isAnswered}
+                      isHighlighted={question.isHighlighted}
                     >
                       <div className="adm-icons">
-                        <img src={checkImg} alt="Marcar pergunta como respondida" />
-                        <img src={answerImg} alt="Destacar pergunta" />
+                        <img className="check-icon" onClick={() => handleCheckQuestionAsAnswered(question.id)} src={checkImg} alt="Marcar pergunta como respondida" />
+                        <img className="highlighted-icon" onClick={() => handleHighlightQuestion(question.id)} src={answerImg} alt="Destacar pergunta" />
                         <img onClick={() => handleDeleteQuestion(question.id)} src={deleteImg} alt="Remover pergunta" />
                       </div>
                     </Question>
